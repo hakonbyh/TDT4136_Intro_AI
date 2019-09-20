@@ -1,3 +1,6 @@
+# Acknowledgement
+A lot of this code is influenced heavily by patrikkj on GitHub.
+
 # Requirements for running code:
 Python 3.6.4 64-bit
 liberaries: numpy, pandas, pillow
