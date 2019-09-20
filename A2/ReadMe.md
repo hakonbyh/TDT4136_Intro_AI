@@ -1,20 +1,14 @@
 # Acknowledgement
 A lot of this code is influenced heavily by patrikkj on GitHub.
 
-# Requirements for running code:
+# Requirements for running code
 Python 3.6.4 64-bit
-liberaries: numpy, pandas, pillow
 
-# Architecture:
+Libraries: numpy, pandas, pillow
 
-Class Node
-Needs to denote one state with all nessecary info.
+# Architecture
 
-Class Map
-Contains the problem and the end state.
+Class AStar:                Implements the A* alogrithm in a standardised way.
+    Class Node:             Used by AStar. It contians information and is the smallest unit.
+    Class MinPriorityOrder: Standard implementation of a min-que. Used to orgainise nodes in the A* algorithm.
 
-Class Min_heap
-Should keep a min heap of the nodes based on expected cost
-
-Class A_star
-Implements the a* algorithm with a given heap object and nodeobjects.
