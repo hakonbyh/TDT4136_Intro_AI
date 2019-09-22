@@ -16,7 +16,7 @@ size():                 Returns the amount of elements in the order.
 #*************************
 # Global static variables
 #*************************
-verbose = False
+verbose = False  # Should be used during debugging.
 
 #*************************
 #         Class

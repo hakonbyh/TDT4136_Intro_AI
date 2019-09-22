@@ -14,7 +14,7 @@ Only run() should be called. It returns a path of nodes.
 #*************************
 # Global static variables
 #*************************
-verbose = True
+verbose = False  # Should be used during debugging.
 
 #*************************
 #        Imports
@@ -101,7 +101,7 @@ class AStar():
                 
                 # If the adjacent node existed before current node was expanded from, and the path to the adjacent node will be shorter
                 # through the current node, adjacent node should be updated with new parent and costs.
-                elif (current_node.g_cost + self.func_cost(current_node, adjacent_node)) < adjacent_node.g_cost:
+                elif (current_node.g_cost + self.func_cost(current_node.state, adjacent_node.state)) < adjacent_node.g_cost:
                     self.attach_and_eval(adjacent_node, current_node)
 
                     # If the node has children, the children should also be updated.
@@ -128,16 +128,6 @@ class AStar():
         return MinPriorityOrder(lambda node: node.f_cost, Node(state=start_state, g_cost=0, h_cost=self.func_heuristic(start_state)))
 
     # Return the desired outcome from the A* algorithm.
-    def find_path_iterative(self, node):
-        path = []
-        path.append(node)
-        next_node = node
-        while True:
-            if next_node.parent == None:
-                break
-            path.append(next_node.parent)
-            next_node = next_node.parent
-
     def find_path(self, node):
         if node.parent is None: # Base case
             return [node]

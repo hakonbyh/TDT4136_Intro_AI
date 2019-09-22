@@ -1,3 +1,36 @@
+"""
+Class given with the assignment.
+
+This class keeps track of the map in the tasks. It is also a part of the state used in other classes.
+
+Behavior:
+pos is allways given by [x, y]
+
+Map_Obj(task=1):                            Initialises the object with task 1 as default.
+    read_map(path):                         Reads in the map from a csv file.
+    fill_critical_positions(task):          Takes in task number and gives the map the apropriate values in the right places.
+
+get_cell_value(pos):                        Takes in pos as [x, y] and returns the cost of moving across the cell.
+get_goal_pos():                             Returns the goal position.
+get_start_pos():                            Returns the start position.
+get_end_goal_pos():                         Returns the position th goal will end at. Only relevant if the goal will move.
+get_maps():                                 Returns the map in string and int format.
+
+move_goal_pos(pos):                         Moves the current goal position.
+set_cell_value(pos, value, str_map=True):   Sets a cells values to a new value. Can be used on string- or int map.
+print_map(map_to_print):                    Prints the provided map.
+pick_move():                                Moves the current goal thowards the end goal.
+replace_map_values(pos, value, goal_pos):   Changes the map value at the given position.
+tick():                                     Moves the current goal closer to the end goal ever 4th time the method is called.
+set_start_pos_str_marker(start_pos, map):   Sets the startposition on the map.
+set_goal_pos_str_marker(goal_pos, map):     Sets the current goal positon on the map.
+
+show_map(map=None):                          Displays the provided map as a pdf file.
+
+
+"""
+
+
 import numpy as np
 np.set_printoptions(threshold=np.inf, linewidth=300)
 import pandas as pd
