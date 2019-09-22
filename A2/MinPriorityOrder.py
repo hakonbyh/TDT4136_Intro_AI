@@ -40,9 +40,14 @@ class MinPriorityOrder():
 
     # Method for returning and removing the first element in the order
     def pop(self):
-        element = self.__order[0]
-        self.__order.remove(element)
-        return element
+        try:
+            element = self.__order[0]
+            self.__order.remove(element)
+            return element
+        except IndexError as ie:
+            print('pop gave a IndexError')
+            print(ie)
+
 
     # Method for restacking the priority order.
     def update(self):
@@ -54,3 +59,43 @@ class MinPriorityOrder():
     # Method for returning amount of elements in order
     def size(self):
         return len(self.__order) + 1
+
+    # Prints the internal state of the order.
+    def print_order(self):
+        order = []
+        for element in self.__order:
+            order.append(self.meth_sorting_value(element))
+        print(order)
+
+
+
+#*************************
+#         Test
+#*************************
+import random
+
+class Node():
+    def __init__(self, state, f_cost=None):
+        self.state = state
+        self.f_cost = f_cost
+
+def func_test():
+    nodes = []
+    for i in range(10):
+        nodes.append(Node(i, random.randrange(0,25)))
+    order = MinPriorityOrder(lambda x: x.f_cost, nodes[0])
+    
+    for node in nodes[1:10]:
+        order.print_order()
+        order.push(node)
+    order.print_order()
+    
+    poped = order.pop()
+    print('Following was popped:', poped.f_cost)
+
+    print('New order:')
+    order.print_order()
+
+if __name__ == "__main__":
+    func_test()
+    
