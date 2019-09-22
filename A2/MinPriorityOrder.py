@@ -12,6 +12,12 @@ update():               Reorders the order.
 size():                 Returns the amount of elements in the order.
 """
 
+
+#*************************
+# Global static variables
+#*************************
+verbose = False
+
 #*************************
 #         Class
 #*************************
@@ -36,15 +42,25 @@ class MinPriorityOrder():
                 return True
             counter += 1
         self.__order.append(push_element)
+        if verbose: print('push was used and gave this que:')
+        if verbose: self.print_order()
+        if verbose: print('--')
         return True
 
     # Method for returning and removing the first element in the order
     def pop(self):
         try:
+            if verbose: print('Pop tried on following que:') 
+            if verbose: self.print_order()
             element = self.__order[0]
+            if verbose: print('Found element:', self.meth_sorting_value(element))
             self.__order.remove(element)
+            if verbose: print('Removed element:')
+            if verbose: self.print_order()
+            if verbose: print('--')
             return element
         except IndexError as ie:
+            if verbose: print('Size of que:', self.size())
             print('pop gave a IndexError')
             print(ie)
 
@@ -58,7 +74,7 @@ class MinPriorityOrder():
 
     # Method for returning amount of elements in order
     def size(self):
-        return len(self.__order) + 1
+        return len(self.__order)
 
     # Prints the internal state of the order.
     def print_order(self):
@@ -91,7 +107,11 @@ def func_test():
     order.print_order()
     
     poped = order.pop()
-    print('Following was popped:', poped.f_cost)
+
+    print('New order:')
+    order.print_order()
+
+    poped = order.pop()
 
     print('New order:')
     order.print_order()
