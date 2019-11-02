@@ -1,5 +1,6 @@
 import copy
 import itertools
+import sys
 
 
 class CSP:
@@ -13,6 +14,12 @@ class CSP:
         # self.constraints[i][j] is a list of legal value pairs for
         # the variable pair (i, j)
         self.constraints = {}
+
+        # Variable to keep track of how many times backtrack function is called
+        self.called_backtrack = 0
+
+        # Variable to keep track of how many times backtrack fails.
+        self.backtrack_fail = 0
 
     def add_variable(self, name, domain):
         """Add a new variable to the CSP. 'name' is the variable name
@@ -109,7 +116,52 @@ class CSP:
         iterations of the loop.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        # ******************************  Change  ******************************
+
+        # Every time backtrack is called it should be recorded.
+        self.called_backtrack += 1
+
+        # If the assignment has only one value in the domain of each variable, the result should be returned.
+        if self.assignment_complete(assignment):
+            return assignment
+        
+        # Uses a variable that has more than one value in its domain.
+        var = self.select_unassigned_variable(assignment)
+
+        # Every value in the variables domain is tested out. This is equivalent to making a guess and see if it can work.
+        # No reason to order the domain values in any particular order.
+        for value in assignment[var]:
+            # In order to see if the guess is right without chaning the starting point, a copy is made.
+            assignment_copy = copy.deepcopy(assignment)
+
+            # The chosen value is used as a guess in the copy.
+            if value in assignment_copy[var]:
+                assignment_copy[var] = [value]
+
+                # The assignment containg the guess is then checked for all constraints.
+                inferences = self.inference(assignment_copy, self.get_all_neighboring_arcs(var))
+
+                # If the guess holds for all constraints, backtrack is recursively called, to guess on new values wihtin the same guess.
+                if inferences:
+                    result = self.backtrack(assignment_copy)
+                    # Base case, returns solution to the initial call.
+                    if result:
+                        return result
+        
+        # Tracks the amount of times back track fails. This signifies how many wrong guesses was made to find the solution.
+        self.backtrack_fail += 1
+        return False
+
+    # Checks if every value has only one value in its domain.
+    def assignment_complete(self, assignment):
+
+        for variable in assignment:
+            if len(assignment[variable]) != 1:
+                return False
+        return True
+
+
+        # ****************************  Change over ****************************
 
     def select_unassigned_variable(self, assignment):
         """The function 'Select-Unassigned-Variable' from the pseudocode
@@ -118,7 +170,14 @@ class CSP:
         of legal values has a length greater than one.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        # ******************************  Change  ******************************
+
+        # Returns a variable that has more than one value in its domain, meaning that it is not decided on yet.
+        for variable in assignment:
+            if len(assignment[variable]) > 1:
+                return variable
+
+        # ****************************  Change over ****************************
 
     def inference(self, assignment, queue):
         """The function 'AC-3' from the pseudocode in the textbook.
@@ -127,7 +186,24 @@ class CSP:
         is the initial queue of arcs that should be visited.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        # ******************************  Change  ******************************
+
+        # Goes through all constraints it is given.
+        while queue:
+            (xi, xj) = queue.pop()
+
+            # Checks if the whole domain holds for constraints. If it does not, all affected variables are added to the queue,
+            # so they are checked again to make shure they are consistent.
+            if self.revise(assignment, xi, xj):
+                if len(assignment[xi]) == 0:
+                    return False
+                for neighbor_arc in self.get_all_neighboring_arcs(xi):
+                    if neighbor_arc[0] != xj:
+                        queue.append(neighbor_arc)
+        # Returns true if the assignment is consistent and has at least one value in every domain.
+        return True
+
+        # ****************************  Change over ****************************
 
     def revise(self, assignment, i, j):
         """The function 'Revise' from the pseudocode in the textbook.
@@ -139,7 +215,36 @@ class CSP:
         legal values in 'assignment'.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        # ******************************  Change  ******************************
+
+        revised = False
+
+        for x in assignment[i]:
+
+            # The goal is to find out if the x value is valid, and this is keept track of by this boolean.
+            x_valid = False
+
+            for y in assignment[j]:
+
+                # Loop through all constraints to see if any y value can give the x value in question.
+                for constraint in self.constraints[i][j]:
+                    if constraint[1] ==  y and constraint[0] == x:
+
+                        # If a constraint allowing current x value is found, this should update x_valid.
+                        x_valid = True
+                        break
+            
+            # If x is found not to be valid the value should be removed from the list and the method should return True.
+            if not x_valid:
+                assignment[i].remove(x)
+                revised = True
+                break
+
+        return revised
+        
+
+        # ****************************  Change over ****************************
+
 
 
 def create_map_coloring_csp():
@@ -209,3 +314,33 @@ def print_sudoku_solution(solution):
         print("")
         if row == 2 or row == 5:
             print('------+-------+------')
+
+# ******************************  Change  ******************************
+
+
+def solve_print_sudoku(filename):
+    sudoku = create_sudoku_csp(filename)
+    solution = sudoku.backtracking_search()
+
+    print('\n\nThe following is the result of the program solving: ', filename)
+    print('The backtrack method was called ', sudoku.called_backtrack, ' times\n')
+    print('The backtrack method failed ', sudoku.backtrack_fail, ' times.\n')
+
+    print_sudoku_solution(solution)
+
+
+
+if __name__ == '__main__':
+
+
+    sys.stdout = open('output.txt', 'w')
+
+    solve_print_sudoku('easy.txt')
+    solve_print_sudoku('medium.txt')
+    solve_print_sudoku('hard.txt')
+    solve_print_sudoku('veryhard.txt')
+    solve_print_sudoku('worldshardest.txt')
+
+
+
+# ****************************  Change over ****************************
